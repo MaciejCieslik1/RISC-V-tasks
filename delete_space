@@ -1,0 +1,36 @@
+	.eqv	print_str, 4
+	.eqv	read_str, 8
+	.eqv	sys_exit, 10
+	.data
+prompt:	.asciz	"Enter string:\n"
+buf:	.space	100
+result:	.space	100
+	.text
+	.globl 	main
+main:
+	li	a7, print_str
+	la	a0, prompt
+	ecall
+	li	a7, read_str
+	la	a0, buf
+	li	a1, 100
+	ecall
+	la 	t0, buf
+	la	t1, result
+	li 	t2, ' '
+loop:
+	lb 	t3, (t0)
+	beqz	t3, end
+	beq 	t3, t2, increment
+	sb	t3, (t1)
+	addi 	t1, t1, 1
+	j	increment
+increment:
+	addi	t0, t0, 1
+	j 	loop
+end:
+	li	a7, print_str
+	la	a0, result
+	ecall
+	li	a7, sys_exit
+	ecall
